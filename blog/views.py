@@ -1,6 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from .models import Post
 
 
 def post_list(request):
-   return HttpResponse('Hello Blog') 
+   posts = Post.published.all()
+   return render(request, 'blog/post/list.html', {
+      'posts': posts
+   })
