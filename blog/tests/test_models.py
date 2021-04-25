@@ -2,35 +2,36 @@ import pytest
 
 from django.utils import timezone
 from django.contrib.auth.models import User
+from model_bakery import baker
 
 from blog.models import Post
 
 
 @pytest.fixture
 def user_sample():
-    user = User.objects.create_user('John', 'lennon@thebeatles.com', 'johnpassword')
+    user = baker.make(User)
     return user
 
 
 @pytest.fixture
 def published_post_sample(user_sample):
-    published_post_sample = Post.objects.create(title='Published post', slug='published-post', author=user_sample, body='Body of a published post', status='published')
-    return published_post_sample 
+    published_post_sample = baker.make(Post, status="published")
+    return published_post_sample
 
 
 @pytest.fixture
 def unpublished_post_sample(user_sample):
-    unpublished_post_sample = Post.objects.create(title='Unpublished post', slug='unpublished-post', author=user_sample, body='Body of a unpublished post', status='draft')
-    return unpublished_post_sample 
-
-
+    unpublished_post_sample = baker.make(Post, status="draft")
+    return unpublished_post_sample
 
 
 @pytest.mark.django_db
 def test_post_create(user_sample):
     Post.objects.create(
-        title='First title', author=user_sample,
-        body='Body full of information', status='published'
+        title="First title",
+        author=user_sample,
+        body="Body full of information",
+        status="published",
     )
     assert Post.objects.count() == 1
 
