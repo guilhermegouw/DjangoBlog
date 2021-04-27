@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from model_bakery import baker
 
-from blog.models import Post
+from blog.models import Post, Comment
 
 
 @pytest.fixture
@@ -46,3 +46,14 @@ def test_published_manager_published_sample(published_post_sample):
 def test_published_manager_unpublished_sample(unpublished_post_sample):
     output = Post.published.all()
     assert unpublished_post_sample not in output
+
+
+@pytest.mark.django_db
+def test_comment_create(published_post_sample):
+    Comment.objects.create(
+        post=published_post_sample,
+        name="Guilherme",
+        email="guilherme@email.com",
+        body="This is the body of a comment.",
+    )
+    assert Comment.objects.count() == 1
